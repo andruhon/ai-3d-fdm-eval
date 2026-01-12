@@ -1,0 +1,21 @@
+{
+  "name": "render-scad-vanilla",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "eval": "bun run index.ts",
+    "mesh": "bun run index.ts --mesh",
+    "build": "bun build index.ts --outdir out",
+    "test": "bun test ./tests/"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@openrouter/sdk": "^0.3.12"
+  }
+}

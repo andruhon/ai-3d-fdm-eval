@@ -1,0 +1,61 @@
+{
+  "llm": {
+    "type": "openrouter",
+    "model": "anthropic/claude-sonnet-4.5:online"
+  },
+  "customTools": {
+    "build": {
+      "command": "bun build index.ts --outdir out",
+      "description": "Run build with index.ts as entry-point"
+    },
+    "run_single_eval": {
+      "command": "bun run eval qwen/qwen3-vl-235b-a22b-instruct ${eval}",
+      "description": "Run single eval from evals dir",
+      "parameters": {
+        "eval": {
+          "description": "Eval name to run"
+        }
+      }
+    },
+    "test": {
+      "command": "bun test ./tests/",
+      "description": "This command will execute all test files matching the pattern *.test.ts in `./tests/` dir."
+    },
+    "request_tool": {
+      "command": "printf \"\\n\\nCommand:\\n${command} \\n\\n Justification:\\n${justification}\"",
+      "description": "Ask user to give you a new tool.",
+      "parameters": {
+        "command": {
+          "description": "Command example snippet in a free form"
+        },
+        "justification": {
+          "description": "Justification why you need this command and how you going to use it"
+        }
+      }
+    },
+    "request_dependency": {
+      "command": "printf \"\\n\\nDependency:\\n${dependency} \\n\\n Justification:\\n${justification}\"",
+      "description": "Ask user to add new dependency.",
+      "parameters": {
+        "command": {
+          "dependency": "Dependency description or snippet in a free form"
+        },
+        "justification": {
+          "description": "Justification why you need this dependency and how you going to use it"
+        }
+      }
+    }
+  },
+  "builtInTools": ["gth_web_fetch"],
+  "middleware": [
+    {
+      "name": "summarization",
+      "trigger": {
+        "tokens": 190000
+      },
+      "keep": {
+        "tokens": 20000
+      }
+    }
+  ]
+}
