@@ -1,9 +1,88 @@
 import { OpenRouter } from "@openrouter/sdk";
-import { mkdir } from "fs/promises";
+import { type SDKOptions } from "@openrouter/sdk";
+import { mkdir, readdir } from "fs/promises";
 import { join } from "path";
 import type { Task, TaskResult } from "./types.js";
 import { generateRunDirectoryName } from "./utils.js";
-import { getTask, getTaskNames, hasTask } from "../evals/tasks/index.js";
+
+/**
+ * Dynamically load all tasks from the evals/tasks directory
+ */
+async function loadTasks(): Promise<Map<string, Task>> {
+  const tasks = new Map<string, Task>();
+  const tasksDir = join(process.cwd(), "evals", "tasks");
+
+  try {
+    const files = await readdir(tasksDir);
+    const taskFiles = files.filter((file) => file.endsWith(".ts"));
+
+    for (const file of taskFiles) {
+      const filePath = join(tasksDir, file);
+      try {
+        const module = await import(filePath);
+
+        // Find the exported task (should be a single Task export)
+        const taskExport = Object.values(module).find(
+          (value): value is Task =>
+            typeof value === "object" &&
+            value !== null &&
+            "name" in value &&
+            "description" in value &&
+            "type" in value &&
+            "prompt" in value &&
+            "createTools" in value &&
+            "validate" in value,
+        );
+
+        if (taskExport) {
+          tasks.set(taskExport.name, taskExport);
+        } else {
+          console.warn(`⚠️  No valid task found in ${file}`);
+        }
+      } catch (error) {
+        console.error(`❌ Failed to load task from ${file}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error(`❌ Failed to read tasks directory:`, error);
+    throw new Error(`Could not load tasks from ${tasksDir}`);
+  }
+
+  return tasks;
+}
+
+/**
+ * Get all task names
+ */
+async function getTaskNames(): Promise<string[]> {
+  const tasks = await loadTasks();
+  return Array.from(tasks.keys());
+}
+
+/**
+ * Get a specific task by name
+ */
+async function getTask(name: string): Promise<Task> {
+  const tasks = await loadTasks();
+  const task = tasks.get(name);
+
+  if (!task) {
+    const availableTasks = Array.from(tasks.keys()).join(", ");
+    throw new Error(
+      `Task "${name}" not found. Available tasks: ${availableTasks}`,
+    );
+  }
+
+  return task;
+}
+
+/**
+ * Check if a task exists
+ */
+async function hasTask(name: string): Promise<boolean> {
+  const tasks = await loadTasks();
+  return tasks.has(name);
+}
 
 /**
  * Run a single task evaluation
@@ -70,23 +149,28 @@ export async function runEvaluation(
 ): Promise<void> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    throw new Error(
-      "OPENROUTER_API_KEY environment variable is not set",
-    );
+    throw new Error("OPENROUTER_API_KEY environment variable is not set");
   }
 
-  const client = new OpenRouter({ apiKey });
+  /**
+  * 
+  * 
+   */
+  const client = new OpenRouter({
+    apiKey,
+    httpReferer: "https://gaunt-sloth-assistant.github.io/",
+    xTitle: "Gaunt Sloth Assistant",
+  });
 
   // Determine which tasks to run
-  const tasksToRun: string[] = taskName
-    ? [taskName]
-    : getTaskNames();
+  const tasksToRun: string[] = taskName ? [taskName] : await getTaskNames();
 
   // Validate task names
   for (const name of tasksToRun) {
-    if (!hasTask(name)) {
+    if (!(await hasTask(name))) {
+      const availableTasks = await getTaskNames();
       throw new Error(
-        `Unknown task: ${name}. Available tasks: ${getTaskNames().join(", ")}`,
+        `Unknown task: ${name}. Available tasks: ${availableTasks.join(", ")}`,
       );
     }
   }
@@ -104,7 +188,7 @@ export async function runEvaluation(
 
   // Run each task
   for (const name of tasksToRun) {
-    const task = getTask(name);
+    const task = await getTask(name);
     const taskOutputDir = join(runDir, name);
 
     const result = await runTask(client, modelName, task, taskOutputDir);
@@ -133,6 +217,8 @@ export async function runEvaluation(
   console.log(`\nTotal: ${results.length} tasks`);
   console.log(`Passed: ${successCount}`);
   console.log(`Failed: ${failCount}`);
-  console.log(`Success rate: ${((successCount / results.length) * 100).toFixed(1)}%`);
+  console.log(
+    `Success rate: ${((successCount / results.length) * 100).toFixed(1)}%`,
+  );
   console.log(`${"=".repeat(60)}\n`);
 }

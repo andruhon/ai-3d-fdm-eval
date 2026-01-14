@@ -1,23 +1,33 @@
 import { describe, test, expect } from "bun:test";
 import { generateRunDirectoryName, type CameraParams } from "../src/utils";
-import { getTask, getTaskNames, hasTask } from "../evals/tasks";
+import { readdir } from "fs/promises";
+import { join } from "path";
+import type { Task } from "../src/types";
 
-describe("Task Registry", () => {
-  test("should have rivet task", () => {
-    expect(hasTask("rivet")).toBe(true);
+describe("Task Loading", () => {
+  test("should have task files in evals/tasks directory", async () => {
+    const tasksDir = join(process.cwd(), "evals", "tasks");
+    const files = await readdir(tasksDir);
+    const taskFiles = files.filter(file => file.endsWith(".ts"));
+    
+    expect(taskFiles.length).toBeGreaterThan(0);
+    expect(taskFiles).toContain("001-rivet-zero-shot.ts");
   });
 
-  test("should return task names", () => {
-    const names = getTaskNames();
-    expect(names).toContain("rivet");
-    expect(names.length).toBeGreaterThan(0);
-  });
-
-  test("should get rivet task", () => {
-    const task = getTask("rivet");
+  test("should dynamically import rivet task", async () => {
+    const taskPath = join(process.cwd(), "evals", "tasks", "001-rivet-zero-shot.ts");
+    const module = await import(taskPath);
+    
+    const task = Object.values(module).find(
+      (value): value is Task =>
+        typeof value === "object" &&
+        value !== null &&
+        "name" in value
+    ) as Task;
+    
     expect(task).toBeDefined();
     expect(task.name).toBe("rivet");
-    expect(task.type).toBe("one-shot");
+    expect(task.type).toBe("zero-shot");
     expect(task.description).toBeTruthy();
     expect(task.prompt).toBeTruthy();
     expect(task.createTools).toBeDefined();
@@ -26,11 +36,6 @@ describe("Task Registry", () => {
     // Test that createTools returns an array
     const tools = task.createTools("/tmp/test");
     expect(Array.isArray(tools)).toBe(true);
-  });
-
-  test("should return undefined for non-existent task", () => {
-    expect(hasTask("non-existent")).toBe(false);
-    expect(getTask("non-existent")).toBeUndefined();
   });
 });
 

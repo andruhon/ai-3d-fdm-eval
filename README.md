@@ -102,19 +102,37 @@ Each task generates:
 - **Default view PNG** - Standard rendering using OpenSCAD's autocenter/viewall
 - **Bottom isometric PNG** - Fixed camera angle (rotation: -35.264°, 0°, 45°) for consistent evaluation
 
+## Evaluation Results
+
+### 2026-01-13: Rivet Task (Zero-shot)
+
+Evaluation of 8 multimodal models on the rivet generation task.
+
+| Model | Task | Preview |
+|-------|------|----------|
+| google/gemini-3-flash-preview | rivet | ![Gemini 3 Flash](saved_results/20260113/google-gemini-3-flash-preview-rivet.png) |
+| z-ai/glm-4.6v | rivet | ![GLM-4.6V](saved_results/20260113/z-ai-glm-4.6v-rivet.png) |
+| openai/gpt-5.2 | rivet | ![GPT-5.2](saved_results/20260113/openai-gpt-5.2-rivet.png) |
+| x-ai/grok-4.1-fast | rivet | ![Grok 4.1 Fast](saved_results/20260113/x-ai-grok-4.1-fast-rivet.png) |
+| anthropic/claude-sonnet-4.5 | rivet | ![Claude Sonnet 4.5](saved_results/20260113/anthropic-claude-sonnet-4.5-rivet.png) |
+| anthropic/claude-opus-4.5 | rivet | ![Claude Opus 4.5](saved_results/20260113/anthropic-claude-opus-4.5-rivet.png) |
+| qwen/qwen3-vl-235b-a22b-instruct | rivet | ![Qwen3-VL](saved_results/20260113/qwen-qwen3-vl-235b-a22b-instruct-rivet.png) |
+| mistralai/mistral-large-2512 | rivet | ![Mistral Large](saved_results/20260113/mistralai-mistral-large-2512-rivet.png) |
+
 ## Models planned for evaluation
 
 The primary criterion of choice is multimodal input with images as a source.
 
 We may later switch to combinations of models - one to generate code and another to check renders.
 
-- google/gemini-3-flash-preview
-- z-ai/glm-4.6v
-- openai/gpt-5.2
-- x-ai/grok-4.1-fast
-- anthropic/claude-sonnet-4.5
-- qwen/qwen3-vl-235b-a22b-instruct
-- mistralai/mistral-large-2512
+- google/gemini-3-flash-preview ✅
+- z-ai/glm-4.6v ✅
+- openai/gpt-5.2 ✅
+- x-ai/grok-4.1-fast ✅
+- anthropic/claude-sonnet-4.5 ✅
+- anthropic/claude-opus-4.5 ✅
+- qwen/qwen3-vl-235b-a22b-instruct ✅
+- mistralai/mistral-large-2512 ✅
 
 Other models to consider:
 
