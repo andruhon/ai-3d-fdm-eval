@@ -1,5 +1,5 @@
 import type { TaskRegistry } from "../../src/types.js";
-import { rivetTask } from "./rivet.js";
+import { rivetTask } from "./001-rivet-one-shot.js";
 
 /**
  * Registry of all available evaluation tasks

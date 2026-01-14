@@ -39,3 +39,6 @@ scratchpad
 
 # Evaluation results
 evals/results
+
+# Gaunt Sloth responses
+.gsloth/gth_*

@@ -32,7 +32,7 @@ bun run index.ts anthropic/claude-3.5-sonnet rivet
 ## Available Tasks
 
 ### `rivet`
-- **Type:** One-shot
+- **Type:** Zero-shot
 - **Description:** Generate a round head rivet with specific dimensions
 - **Tools:** write_file
 - **Validation:** 

@@ -27,8 +27,8 @@ export interface Task {
   /** Factory function to create tools with the given working directory */
   createTools: (workdir: string) => Tool<any, any>[];
 
-  /** Task type: one-shot or multi-turn */
-  type: "one-shot" | "multi-turn";
+  /** Task type: one-shot, TODO */
+  type: "zero-shot";
 
   /**
    * Validate and process the task result

@@ -39,7 +39,7 @@ Output:
 
 📋 Running task: rivet
    Description: Generate a round head rivet with specific dimensions using OpenSCAD
-   Type: one-shot
+   Type: zero-shot
    Model: anthropic/claude-3.5-sonnet
 
 🤖 Calling model...

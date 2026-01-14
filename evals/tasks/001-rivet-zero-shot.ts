@@ -15,7 +15,7 @@ import { join } from "path";
 export const rivetTask: Task = {
   name: "rivet",
   description: "Generate a round head rivet with specific dimensions using OpenSCAD",
-  type: "one-shot",
+  type: "zero-shot",
 
   prompt: `Generate an OpenSCAD file for a round head rivet with the following specifications:
 
