@@ -15,7 +15,7 @@ import { join } from "path";
  */
 export const trapezoidalRivetTask: Task = {
   name: "trapezoidal-rivet",
-  description: "Generate a trapezoidal head rivet plug designed for 3D printing on its head",
+  description: "Generate a trapezoidal head rivet (pan head) plug designed for 3D printing on its head",
   type: "zero-shot",
 
   prompt: `Generate an OpenSCAD file for a trapezoidal head rivet plug with the following specifications:
