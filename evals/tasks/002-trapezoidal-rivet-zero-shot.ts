@@ -18,7 +18,8 @@ export const trapezoidalRivetTask: Task = {
   description: "Generate a trapezoidal head rivet (pan head) plug designed for 3D printing on its head",
   type: "zero-shot",
 
-  prompt: `Generate an OpenSCAD file for a trapezoidal head rivet plug with the following specifications:
+  
+  prompt: `Generate an OpenSCAD file for a pan head (trapezoidal head) rivet plug with the following specifications:
 
 Dimensions:
 - Total height: 18mm
