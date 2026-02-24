@@ -11,7 +11,6 @@ import { join } from "path";
  * 1. Understand mechanical part specifications for a plug-style rivet
  * 2. Generate valid OpenSCAD code with chamfered features
  * 3. Create a 3D-printable model considering print orientation and support-free constraints
- * 4. Apply proper chamfer angles for 3D printing without supports
  */
 export const trapezoidalRivetTask: Task = {
   name: "trapezoidal-rivet",
@@ -31,18 +30,14 @@ Dimensions:
 
 Design requirements:
 1. The rivet head should have a trapezoidal profile (frustum/truncated cone shape), expanding towards the shaft.
-2. The chamfer angle on the head should be 35 degrees or less (measured from vertical) to enable 3D printing without supports
-3. The part will be printed standing on its head (inverted), so the head should be at the bottom in the model
-4. Model the rivet with the head at Z=0 (bottom) and shaft pointing upward
-5. The shaft and head should be a single unified object
+2. The shaft and head should be a single unified object
 
 Create a file called "trapezoidal-rivet.scad" with the complete OpenSCAD code.
 
 Important:
 - Use $fn=50 or higher for smooth curves
 - Make sure all measurements are in millimeters
-- Verify the chamfer angle is within the 35-degree constraint for support-free printing
-- Position the model with the head at the bottom (will be printed this way)`,
+`,
 
   createTools: (workdir: string) => [createWriteFileTool(workdir)],
 
